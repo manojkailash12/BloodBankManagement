@@ -9,6 +9,8 @@ import RegisterAdmin from './pages/RegisterAdmin';
 import VerifyOTP from './pages/VerifyOTP';
 import Dashboard from './pages/Dashboard';
 import Donations from './pages/Donations';
+import FindBloodBanks from './pages/FindBloodBanks';
+import Analytics from './pages/Analytics';
 import Reports from './pages/Reports';
 import Users from './pages/Users';
 import ChangePassword from './pages/ChangePassword';
@@ -50,6 +52,8 @@ function App() {
         <Route path="/verify-otp" element={<VerifyOTP setUser={setUser} />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard user={user} /></ProtectedRoute>} />
         <Route path="/donations" element={<ProtectedRoute><Donations user={user} /></ProtectedRoute>} />
+        <Route path="/find-blood-banks" element={<ProtectedRoute><FindBloodBanks /></ProtectedRoute>} />
+        <Route path="/analytics" element={<ProtectedRoute><Analytics user={user} /></ProtectedRoute>} />
         <Route path="/reports" element={<ProtectedRoute><Reports user={user} /></ProtectedRoute>} />
         <Route path="/users" element={<ProtectedRoute><Users user={user} /></ProtectedRoute>} />
         <Route path="/change-password" element={<ProtectedRoute><ChangePassword user={user} /></ProtectedRoute>} />

@@ -26,9 +26,11 @@ function Navbar({ user, setUser }) {
         <div className="navbar-links">
           <Link to="/dashboard">Dashboard</Link>
           <Link to="/donations">Donations</Link>
+          <Link to="/find-blood-banks">🗺️ Find Blood Banks</Link>
           {user?.role === 'admin' && (
             <>
               <Link to="/users">👥 Users</Link>
+              <Link to="/analytics">📊 Analytics</Link>
               <Link to="/reports" style={{ 
                 background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
                 color: 'white',
@@ -36,7 +38,7 @@ function Navbar({ user, setUser }) {
                 borderRadius: '6px',
                 fontWeight: '600'
               }}>
-                📊 Reports
+                📄 Reports
               </Link>
             </>
           )}
