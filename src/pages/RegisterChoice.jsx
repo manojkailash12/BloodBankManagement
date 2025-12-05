@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 
 function RegisterChoice() {
   return (
-    <div className="container" style={{ maxWidth: '1000px', marginTop: '50px' }}>
-      <div className="card" style={{ padding: '60px 40px', textAlign: 'center' }}>
+    <div className="container" style={{ maxWidth: '1000px', marginTop: '50px', padding: '20px' }}>
+      <div className="card" style={{ padding: 'clamp(30px, 5vw, 60px) clamp(20px, 4vw, 40px)', textAlign: 'center' }}>
         <h1 style={{ 
-          fontSize: '48px', 
+          fontSize: 'clamp(28px, 6vw, 48px)', 
           marginBottom: '15px', 
           color: '#dc3545',
           fontWeight: 'bold',
@@ -15,17 +15,17 @@ function RegisterChoice() {
           🩸 BLOOD BANK MANAGEMENT
         </h1>
         <p style={{ 
-          fontSize: '20px', 
+          fontSize: 'clamp(16px, 3vw, 20px)', 
           color: '#666', 
-          marginBottom: '50px',
+          marginBottom: 'clamp(30px, 5vw, 50px)',
           fontStyle: 'italic'
         }}>
           A drop of blood could save a life
         </p>
 
         <h2 style={{ 
-          fontSize: '32px', 
-          marginBottom: '40px', 
+          fontSize: 'clamp(24px, 4vw, 32px)', 
+          marginBottom: 'clamp(25px, 4vw, 40px)', 
           color: '#333',
           fontWeight: '600'
         }}>

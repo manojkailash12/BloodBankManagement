@@ -28,22 +28,28 @@ function Login({ setUser }) {
   };
 
   return (
-    <div className="container" style={{ maxWidth: '550px', marginTop: '80px' }}>
+    <div className="container" style={{ maxWidth: '550px', marginTop: '80px', padding: '20px' }}>
       <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
         {/* Header with blood bag image */}
         <div style={{
           background: 'linear-gradient(135deg, #5c9ead 0%, #7eb3c4 100%)',
-          padding: '40px 30px',
+          padding: '30px 20px',
           textAlign: 'center',
           position: 'relative'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-            <div style={{ fontSize: '48px' }}>💉</div>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '15px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ fontSize: '40px' }}>💉</div>
             <div>
-              <h2 style={{ color: '#c31432', margin: 0, fontSize: '28px', fontWeight: 'bold' }}>350 ml Blood</h2>
-              <p style={{ color: '#c31432', margin: 0, fontSize: '18px' }}>Can Save Precious Lives</p>
+              <h2 style={{ color: '#c31432', margin: 0, fontSize: 'clamp(20px, 5vw, 28px)', fontWeight: 'bold' }}>350 ml Blood</h2>
+              <p style={{ color: '#c31432', margin: 0, fontSize: 'clamp(14px, 3vw, 18px)' }}>Can Save Precious Lives</p>
             </div>
-            <div style={{ fontSize: '48px', display: 'flex', gap: '5px' }}>
+            <div style={{ fontSize: '40px', display: 'flex', gap: '5px' }}>
               <span>🧑</span><span>👨</span><span>👩</span><span>🧒</span>
             </div>
           </div>

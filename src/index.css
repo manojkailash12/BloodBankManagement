@@ -434,3 +434,197 @@ body::after {
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
+
+
+/* Responsive Design for All Screen Sizes */
+@media (max-width: 1200px) {
+  .container {
+    max-width: 95%;
+    padding: 15px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+  }
+
+  .navbar-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .navbar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 28px !important;
+  }
+
+  h2 {
+    font-size: 22px !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 15px;
+  }
+
+  .stat-card h3 {
+    font-size: 28px;
+  }
+
+  .table {
+    font-size: 14px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+
+  .navbar-links a,
+  .navbar-links button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Make forms responsive */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5px;
+  }
+
+  .card {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  h1 {
+    font-size: 24px !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card h3 {
+    font-size: 24px;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .table {
+    font-size: 12px;
+  }
+
+  .table th,
+  .table td {
+    padding: 6px;
+    white-space: nowrap;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+/* Ensure tables are scrollable on small screens */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Make images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive grid layouts */
+@media (max-width: 768px) {
+  [style*="display: grid"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Fix navbar on mobile */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 0;
+  }
+
+  .navbar-content {
+    padding: 0 10px;
+  }
+
+  .navbar h2 {
+    font-size: 18px !important;
+  }
+}
+
+/* Responsive charts */
+@media (max-width: 768px) {
+  .recharts-wrapper {
+    width: 100% !important;
+  }
+}
+
+/* Ensure proper spacing on all devices */
+* {
+  box-sizing: border-box;
+}
+
+/* Prevent horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
+/* Make buttons touch-friendly on mobile */
+@media (max-width: 768px) {
+  button,
+  a {
+    min-height: 44px; /* iOS recommended touch target size */
+    min-width: 44px;
+  }
+}
