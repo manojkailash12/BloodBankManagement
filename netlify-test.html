@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 { color: #667eea; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover { background: #5568d3; }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🩸 Netlify API Tester</h1>
+        <p>Test your Blood Bank API endpoints after deployment</p>
+        
+        <h3>1. Test API Connection</h3>
+        <button onclick="testAPI()">Test /api Endpoint</button>
+        <div id="apiResult" class="result"></div>
+
+        <h3>2. Test Registration</h3>
+        <input type="text" id="testName" placeholder="Full Name" value="Test User">
+        <input type="email" id="testEmail" placeholder="Email" value="test@example.com">
+        <input type="password" id="testPassword" placeholder="Password" value="password123">
+        <input type="tel" id="testPhone" placeholder="Phone" value="1234567890">
+        <button onclick="testRegister()">Test Registration</button>
+        <div id="registerResult" class="result"></div>
+
+        <h3>3. Environment Check</h3>
+        <button onclick="checkEnvironment()">Check Configuration</button>
+        <div id="envResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin + '/api';
+
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            element.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+        }
+
+        function clear(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+
+        async function testAPI() {
+            clear('apiResult');
+            log('apiResult', 'Testing API connection...', 'info');
+            
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log('apiResult', '✅ API is running!', 'success');
+                    log('apiResult', JSON.stringify(data, null, 2), 'success');
+                } else {
+                    log('apiResult', '❌ API returned error', 'error');
+                    log('apiResult', JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                log('apiResult', '❌ Failed to connect to API', 'error');
+                log('apiResult', error.message, 'error');
+                log('apiResult', '\nPossible issues:', 'error');
+                log('apiResult', '- Netlify functions not deployed', 'error');
+                log('apiResult', '- Environment variables not set', 'error');
+                log('apiResult', '- Build failed', 'error');
+            }
+        }
+
+        async function testRegister() {
+            clear('registerResult');
+            log('registerResult', 'Testing registration endpoint...', 'info');
+            
+            const formData = {
+                name: document.getElementById('testName').value,
+                email: document.getElementById('testEmail').value,
+                password: document.getElementById('testPassword').value,
+                bloodType: 'A+',
+                phone: document.getElementById('testPhone').value,
+                age: '25',
+                address: 'Test Address',
+                role: 'donor'
+            };
+
+            try {
+                const response = await fetch(API_URL + '/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log('registerResult', '✅ Registration successful!', 'success');
+                    log('registerResult', JSON.stringify(data, null, 2), 'success');
+                    log('registerResult', '\n📧 Check email for OTP', 'info');
+                } else {
+                    log('registerResult', '❌ Registration failed', 'error');
+                    log('registerResult', JSON.stringify(data, null, 2), 'error');
+                    
+                    if (data.error?.includes('Email already registered')) {
+                        log('registerResult', '\n💡 Try a different email address', 'info');
+                    } else if (data.error?.includes('Database')) {
+                        log('registerResult', '\n💡 Check MongoDB connection', 'error');
+                        log('registerResult', '- Verify MONGODB_URI in Netlify env vars', 'error');
+                        log('registerResult', '- Check MongoDB Atlas network access', 'error');
+                    }
+                }
+            } catch (error) {
+                log('registerResult', '❌ Request failed', 'error');
+                log('registerResult', error.message, 'error');
+            }
+        }
+
+        function checkEnvironment() {
+            clear('envResult');
+            log('envResult', 'Environment Configuration Checklist:', 'info');
+            log('envResult', '\n📋 Required Environment Variables in Netlify:', 'info');
+            log('envResult', '  ✓ MONGODB_URI', 'info');
+            log('envResult', '  ✓ JWT_SECRET', 'info');
+            log('envResult', '  ✓ EMAIL_USER', 'info');
+            log('envResult', '  ✓ EMAIL_PASS', 'info');
+            log('envResult', '  ✓ NODE_ENV=production', 'info');
+            
+            log('envResult', '\n🔍 How to verify:', 'info');
+            log('envResult', '1. Go to Netlify Dashboard', 'info');
+            log('envResult', '2. Select your site', 'info');
+            log('envResult', '3. Go to Site settings → Environment variables', 'info');
+            log('envResult', '4. Verify all 5 variables are set', 'info');
+            
+            log('envResult', '\n⚠️ Common Issues:', 'info');
+            log('envResult', '- MONGODB_URI missing /bloodbank at end', 'error');
+            log('envResult', '- EMAIL_PASS has spaces (should be 16 chars no spaces)', 'error');
+            log('envResult', '- JWT_SECRET too short (needs 32+ characters)', 'error');
+            log('envResult', '- MongoDB Atlas IP not whitelisted (use 0.0.0.0/0)', 'error');
+            
+            log('envResult', '\n🔄 After fixing:', 'info');
+            log('envResult', '1. Update environment variables', 'info');
+            log('envResult', '2. Go to Deploys tab', 'info');
+            log('envResult', '3. Click "Trigger deploy" → "Clear cache and deploy"', 'info');
+        }
+
+        // Auto-test on load
+        window.onload = () => {
+            setTimeout(testAPI, 500);
+        };
+    </script>
+</body>
+</html>
