@@ -181,20 +181,26 @@ function Reports({ user }) {
     doc.text(`Generated: ${format(new Date(), 'MMMM dd, yyyy HH:mm')}`, 14, 30);
     doc.text(`Total Donors: ${donors.length}`, 14, 38);
     
+    const totalDonated = donors.reduce((sum, d) => sum + (d.totalDonated || 0), 0);
+    doc.text(`Total Blood Donated: ${totalDonated} ml`, 14, 46);
+    
     const donorData = donors.map(d => [
       d.name,
       d.email,
       d.bloodType,
       d.phone,
       d.age,
+      d.totalDonated || 0,
+      d.donationCount || 0,
       format(new Date(d.createdAt), 'yyyy-MM-dd')
     ]);
     
     doc.autoTable({
-      startY: 45,
-      head: [['Name', 'Email', 'Blood Type', 'Phone', 'Age', 'Registered']],
+      startY: 52,
+      head: [['Name', 'Email', 'Blood Type', 'Phone', 'Age', 'ML Donated', 'Times', 'Registered']],
       body: donorData,
-      theme: 'striped'
+      theme: 'striped',
+      styles: { fontSize: 8 }
     });
     
     doc.save(`donors-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
@@ -211,20 +217,26 @@ function Reports({ user }) {
     doc.text(`Generated: ${format(new Date(), 'MMMM dd, yyyy HH:mm')}`, 14, 30);
     doc.text(`Total Receivers: ${receivers.length}`, 14, 38);
     
+    const totalReceived = receivers.reduce((sum, d) => sum + (d.totalReceived || 0), 0);
+    doc.text(`Total Blood Received: ${totalReceived} ml`, 14, 46);
+    
     const receiverData = receivers.map(d => [
       d.name,
       d.email,
       d.bloodType,
       d.phone,
       d.age,
+      d.totalReceived || 0,
+      d.receivedCount || 0,
       format(new Date(d.createdAt), 'yyyy-MM-dd')
     ]);
     
     doc.autoTable({
-      startY: 45,
-      head: [['Name', 'Email', 'Blood Type', 'Phone', 'Age', 'Registered']],
+      startY: 52,
+      head: [['Name', 'Email', 'Blood Type', 'Phone', 'Age', 'ML Received', 'Times', 'Registered']],
       body: receiverData,
-      theme: 'striped'
+      theme: 'striped',
+      styles: { fontSize: 8 }
     });
     
     doc.save(`receivers-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
@@ -240,6 +252,8 @@ function Reports({ user }) {
       'Blood Type': d.bloodType,
       'Phone': d.phone,
       'Age': d.age,
+      'ML Donated': d.totalDonated || 0,
+      'Donation Count': d.donationCount || 0,
       'Address': d.address,
       'Registered Date': format(new Date(d.createdAt), 'yyyy-MM-dd')
     }));
@@ -260,6 +274,8 @@ function Reports({ user }) {
       'Blood Type Needed': d.bloodType,
       'Phone': d.phone,
       'Age': d.age,
+      'ML Received': d.totalReceived || 0,
+      'Received Count': d.receivedCount || 0,
       'Address': d.address,
       'Registered Date': format(new Date(d.createdAt), 'yyyy-MM-dd')
     }));
@@ -287,14 +303,16 @@ function Reports({ user }) {
       u.role.toUpperCase(),
       u.bloodType,
       u.phone,
+      u.role === 'donor' ? (u.totalDonated || 0) : u.role === 'receiver' ? (u.totalReceived || 0) : '-',
       format(new Date(u.createdAt), 'yyyy-MM-dd')
     ]);
     
     doc.autoTable({
       startY: 52,
-      head: [['Name', 'Email', 'Role', 'Blood Type', 'Phone', 'Registered']],
+      head: [['Name', 'Email', 'Role', 'Blood Type', 'Phone', 'ML', 'Registered']],
       body: userData,
-      theme: 'striped'
+      theme: 'striped',
+      styles: { fontSize: 8 }
     });
     
     doc.save(`all-users-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
@@ -311,6 +329,8 @@ function Reports({ user }) {
       'Blood Type': u.bloodType,
       'Phone': u.phone,
       'Age': u.age,
+      'ML Donated': u.role === 'donor' ? (u.totalDonated || 0) : '-',
+      'ML Received': u.role === 'receiver' ? (u.totalReceived || 0) : '-',
       'Address': u.address,
       'Registered Date': format(new Date(u.createdAt), 'yyyy-MM-dd')
     }));
@@ -327,6 +347,8 @@ function Reports({ user }) {
         'Blood Type': d.bloodType,
         'Phone': d.phone,
         'Age': d.age,
+        'ML Donated': d.totalDonated || 0,
+        'Donation Count': d.donationCount || 0,
         'Address': d.address,
         'Registered Date': format(new Date(d.createdAt), 'yyyy-MM-dd')
       }));
@@ -343,6 +365,8 @@ function Reports({ user }) {
         'Blood Type Needed': d.bloodType,
         'Phone': d.phone,
         'Age': d.age,
+        'ML Received': d.totalReceived || 0,
+        'Received Count': d.receivedCount || 0,
         'Address': d.address,
         'Registered Date': format(new Date(d.createdAt), 'yyyy-MM-dd')
       }));
@@ -592,6 +616,7 @@ function Reports({ user }) {
                       <th>Role</th>
                       <th>Blood Type</th>
                       <th>Phone</th>
+                      <th>ML Donated/Received</th>
                       <th>Registered</th>
                     </tr>
                   </thead>
@@ -614,6 +639,19 @@ function Reports({ user }) {
                         </td>
                         <td><strong>{user.bloodType}</strong></td>
                         <td>{user.phone}</td>
+                        <td>
+                          {user.role === 'donor' ? (
+                            <span style={{ color: '#667eea', fontWeight: '600' }}>
+                              {user.totalDonated || 0} ml ({user.donationCount || 0}x)
+                            </span>
+                          ) : user.role === 'receiver' ? (
+                            <span style={{ color: '#dc3545', fontWeight: '600' }}>
+                              {user.totalReceived || 0} ml ({user.receivedCount || 0}x)
+                            </span>
+                          ) : (
+                            <span style={{ color: '#999' }}>-</span>
+                          )}
+                        </td>
                         <td>{format(new Date(user.createdAt), 'MMM dd, yyyy')}</td>
                       </tr>
                     ))}

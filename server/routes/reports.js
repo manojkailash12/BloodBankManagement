@@ -76,6 +76,30 @@ router.get('/users', auth, adminAuth, async (req, res) => {
       .select('name email bloodType phone age address role createdAt')
       .sort({ createdAt: -1 });
 
+    // Get donation totals for each user
+    const usersWithDonations = await Promise.all(users.map(async (user) => {
+      const donations = await Donation.find({ 
+        donor: user._id,
+        status: { $in: ['donated', 'received'] }
+      });
+      
+      const totalDonated = donations
+        .filter(d => d.status === 'donated')
+        .reduce((sum, d) => sum + d.quantity, 0);
+      
+      const totalReceived = donations
+        .filter(d => d.status === 'received')
+        .reduce((sum, d) => sum + d.quantity, 0);
+      
+      return {
+        ...user.toObject(),
+        totalDonated,
+        totalReceived,
+        donationCount: donations.filter(d => d.status === 'donated').length,
+        receivedCount: donations.filter(d => d.status === 'received').length
+      };
+    }));
+
     const stats = {
       total: users.length,
       donors: users.filter(u => u.role === 'donor').length,
@@ -83,7 +107,7 @@ router.get('/users', auth, adminAuth, async (req, res) => {
       admins: users.filter(u => u.role === 'admin').length
     };
 
-    res.json({ users, stats });
+    res.json({ users: usersWithDonations, stats });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
